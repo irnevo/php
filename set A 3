@@ -1,0 +1,64 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Update Product Price</title>
+</head>
+<body>
+    <h2>Update Product Price</h2>
+    <form action="update_price_process.php" method="post">
+        <label for="product_number">Product Number:</label><br>
+        <input type="text" id="product_number" name="product_number" required><br><br>
+
+        <label for="new_price">New Price:</label><br>
+        <input type="number" step="0.01" id="new_price" name="new_price" required><br><br>
+
+        <input type="submit" value="Update Price">
+    </form>
+</body>
+</html>
+
+
+
+
+
+
+<?php
+// Simulated product database with product numbers and prices
+$products = [
+    "P001" => ["name" => "Product A", "price" => 100],
+    "P002" => ["name" => "Product B", "price" => 150],
+    "P003" => ["name" => "Product C", "price" => 200]
+];
+
+// Check if the form was submitted and if necessary fields are present
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Check if the form fields are set
+    if (isset($_POST['product_number']) && isset($_POST['new_price'])) {
+        $product_number = $_POST['product_number'];
+        $new_price = $_POST['new_price'];
+
+        // Check if the product exists in the simulated database
+        if (array_key_exists($product_number, $products)) {
+            // Update the product price
+            $products[$product_number]['price'] = $new_price;
+
+            // Display success message
+            echo "<h2>Price Update Successful</h2>";
+            echo "Product Name: " . htmlspecialchars($products[$product_number]['name']) . "<br>";
+            echo "New Price: $" . number_format($new_price, 2) . "<br>";
+        } else {
+            // Display error message if the product number is not found
+            echo "<h2>Product Not Found</h2>";
+            echo "The product with number " . htmlspecialchars($product_number) . " was not found.";
+        }
+    } else {
+        // If POST data is missing, display an error message
+        echo "<h2>Error: Missing Data</h2>";
+        echo "Please fill out all fields.";
+    }
+} else {
+    // If the form was not submitted, display an error message
+    echo "<h2>Error: Invalid Request</h2>";
+    echo "Please submit the form.";
+}
+?>
