@@ -1,0 +1,150 @@
+-- Create the database (if it doesn't exist)
+CREATE DATABASE IF NOT EXISTS project_management;
+
+-- Switch to the database
+USE project_management;
+
+-- Create Employee table
+CREATE TABLE Employee (
+    eno INT PRIMARY KEY,
+    ename VARCHAR(100),
+    sal DECIMAL(10, 2)
+);
+
+-- Create Project table
+CREATE TABLE Project (
+    pno INT PRIMARY KEY,
+    pname VARCHAR(100),
+    duration INT
+);
+
+-- Create Works_On junction table
+CREATE TABLE Works_On (
+    eno INT,
+    pno INT,
+    PRIMARY KEY (eno, pno),
+    FOREIGN KEY (eno) REFERENCES Employee(eno),
+    FOREIGN KEY (pno) REFERENCES Project(pno)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+INSERT INTO Employee (eno, ename, sal) VALUES
+(1, 'John Doe', 50000),
+(2, 'Jane Smith', 55000),
+(3, 'Alice Johnson', 60000);
+
+INSERT INTO Project (pno, pname, duration) VALUES
+(101, 'Project A', 30),
+(102, 'Project B', 45),
+(103, 'Project C', 60);
+
+INSERT INTO Works_On (eno, pno) VALUES
+(1, 101),
+(2, 101),
+(3, 102),
+(1, 103);
+
+
+
+
+
+
+
+
+
+
+<?php
+// Database connection
+$host = 'localhost';
+$db = 'project_management'; // Database name
+$user = 'root'; // MySQL username
+$pass = ''; // MySQL password (if any)
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Capture the project name from the user
+if (isset($_POST['pname'])) {
+    $pname = $_POST['pname'];
+
+    // Query to fetch employee names and project duration for the given project name
+    $sql = "SELECT e.ename, p.duration 
+            FROM Employee e
+            JOIN Works_On w ON e.eno = w.eno
+            JOIN Project p ON w.pno = p.pno
+            WHERE p.pname = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $pname);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if any employees found
+    if ($result->num_rows > 0) {
+        echo "<h2>Employees working on project: $pname</h2>";
+        echo "<table border='1'><tr><th>Employee Name</th><th>Project Duration (in days)</th></tr>";
+
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr><td>" . htmlspecialchars($row['ename']) . "</td><td>" . htmlspecialchars($row['duration']) . "</td></tr>";
+        }
+
+        echo "</table>";
+    } else {
+        echo "No employees found for project: " . htmlspecialchars($pname);
+    }
+
+    $stmt->close();
+}
+
+$conn->close();
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Employees by Project</title>
+</head>
+<body>
+    <h2>Enter Project Name</h2>
+    <form action="display_employees.php" method="post">
+        <label for="pname">Project Name:</label>
+        <input type="text" id="pname" name="pname" required>
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
+
