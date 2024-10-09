@@ -1,0 +1,165 @@
+-- Create the database (if it doesn't exist)
+CREATE DATABASE IF NOT EXISTS insurance_management;
+
+-- Switch to the database
+USE insurance_management;
+
+-- Create Client table
+CREATE TABLE Client (
+    c_no INT PRIMARY KEY,
+    c_name VARCHAR(100),
+    c_addr VARCHAR(255),
+    birth_date DATE
+);
+
+-- Create Policy_info table
+CREATE TABLE Policy_info (
+    p_no INT PRIMARY KEY,
+    p_name VARCHAR(100),
+    maturity_amt DECIMAL(10, 2),
+    prem_amt DECIMAL(10, 2),
+    policy_term INT
+);
+
+-- Create Client_Policy junction table
+CREATE TABLE Client_Policy (
+    c_no INT,
+    p_no INT,
+    date_of_purchase DATE,
+    PRIMARY KEY (c_no, p_no),
+    FOREIGN KEY (c_no) REFERENCES Client(c_no),
+    FOREIGN KEY (p_no) REFERENCES Policy_info(p_no)
+);
+
+
+
+
+
+
+
+
+
+
+INSERT INTO Client (c_no, c_name, c_addr, birth_date) VALUES
+(1, 'Alice Johnson', '123 Elm St', '1985-01-15'),
+(2, 'Bob Smith', '456 Maple Ave', '1978-05-23'),
+(3, 'Charlie Brown', '789 Oak Dr', '1990-07-30');
+
+INSERT INTO Policy_info (p_no, p_name, maturity_amt, prem_amt, policy_term) VALUES
+(101, 'Life Insurance', 100000, 5000, 20),
+(102, 'Health Insurance', 50000, 3000, 15),
+(103, 'Car Insurance', 30000, 2000, 5);
+
+INSERT INTO Client_Policy (c_no, p_no, date_of_purchase) VALUES
+(1, 101, '2020-01-20'),
+(1, 102, '2021-02-15'),
+(2, 101, '2019-05-10'),
+(3, 103, '2023-03-01');
+
+
+
+
+
+
+
+
+
+
+
+<?php
+// Database connection
+$host = 'localhost';
+$db = 'insurance_management'; // Database name
+$user = 'root'; // MySQL username
+$pass = ''; // MySQL password (if any)
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Capture the client number and year from the user
+if (isset($_POST['c_no']) && isset($_POST['year'])) {
+    $c_no = $_POST['c_no'];
+    $year = $_POST['year'];
+
+    // Query to fetch policy details for the given client and year
+    $sql = "SELECT c.c_name, YEAR(cp.date_of_purchase) AS year,
+                   p.p_name, p.maturity_amt, p.prem_amt, p.policy_term, cp.date_of_purchase
+            FROM Client c
+            JOIN Client_Policy cp ON c.c_no = cp.c_no
+            JOIN Policy_info p ON cp.p_no = p.p_no
+            WHERE c.c_no = ? AND YEAR(cp.date_of_purchase) = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ii', $c_no, $year);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if any policies found
+    if ($result->num_rows > 0) {
+        echo "<h2>Client Name: " . htmlspecialchars($result->fetch_assoc()['c_name']) . "<br>Year: " . htmlspecialchars($year) . "</h2>";
+        echo "<table border='1'>
+                <tr>
+                    <th>Policy Name</th>
+                    <th>Maturity Amount</th>
+                    <th>Premium Amount</th>
+                    <th>Policy Term</th>
+                    <th>Date of Purchase</th>
+                </tr>";
+
+        // Reset result pointer to fetch rows again
+        $result->data_seek(0); 
+
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>
+                    <td>" . htmlspecialchars($row['p_name']) . "</td>
+                    <td>" . htmlspecialchars($row['maturity_amt']) . "</td>
+                    <td>" . htmlspecialchars($row['prem_amt']) . "</td>
+                    <td>" . htmlspecialchars($row['policy_term']) . "</td>
+                    <td>" . htmlspecialchars($row['date_of_purchase']) . "</td>
+                  </tr>";
+        }
+
+        echo "</table>";
+    } else {
+        echo "No policies found for the client with ID: " . htmlspecialchars($c_no) . " in the year: " . htmlspecialchars($year);
+    }
+
+    $stmt->close();
+}
+
+$conn->close();
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Policy Details</title>
+</head>
+<body>
+    <h2>Enter Client Number and Year</h2>
+    <form action="display_policy_details.php" method="post">
+        <label for="c_no">Client Number:</label>
+        <input type="number" id="c_no" name="c_no" required>
+        <br><br>
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" required min="2000" max="2100">
+        <br><br>
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
