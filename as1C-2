@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Salary Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Worker Salary Calculator</h1>
+    <?php
+    class Worker {
+        public $worker_name;
+        public $no_of_days_worked;
+        public $pay_rate;
+
+        public function __construct($worker_name = "Unknown", $no_of_days_worked = 0, $pay_rate = 0) {
+            $this->worker_name = $worker_name;
+            $this->no_of_days_worked = $no_of_days_worked;
+            $this->pay_rate = $pay_rate;
+        }
+
+        public function calculate_salary() {
+            return $this->no_of_days_worked * $this->pay_rate;
+        }
+
+        public function display_details() {
+            $salary = $this->calculate_salary();
+            return "Worker Name: {$this->worker_name}<br>Days Worked: {$this->no_of_days_worked}<br>Pay Rate: {$this->pay_rate}<br>Salary: {$salary}";
+        }
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $name = $_POST["worker_name"];
+        $days_worked = $_POST["no_of_days_worked"];
+        $pay_rate = $_POST["pay_rate"];
+        $worker = new Worker($name, $days_worked, $pay_rate);
+        echo "<div class='result'><h3>Worker Details:</h3>" . $worker->display_details() . "</div>";
+    }
+    ?>
+    <form method="post">
+        <input type="text" name="worker_name" placeholder="Worker Name" required>
+        <input type="number" name="no_of_days_worked" placeholder="Number of Days Worked" required>
+        <input type="number" name="pay_rate" placeholder="Pay Rate per Day" required>
+        <button type="submit">Calculate Salary</button>
+    </form>
+</div>
+</body>
+</html>
