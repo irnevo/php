@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Pay Slip</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"], input[type="number"], button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .payslip {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Employee Pay Slip</h1>
+    <form method="post">
+        <input type="text" name="emp_name" placeholder="Employee Name" required>
+        <input type="text" name="dept_name" placeholder="Department Name" required>
+        <input type="number" name="basic_sal" placeholder="Basic Salary" step="0.01" required>
+        <button type="submit">Generate Pay Slip</button>
+    </form>
+    <?php
+    class Employee {
+        private $emp_name;
+        private $dept_name;
+        private $basic_sal;
+        private $DA;
+        private $HRA;
+        private $TA;
+        private $IT;
+        private $PF;
+        private $PT;
+        private $GROSS;
+        private $DEDUCTION;
+        private $NET;
+
+        public function __construct($emp_name, $dept_name, $basic_sal) {
+            $this->emp_name = $emp_name;
+            $this->dept_name = $dept_name;
+            $this->basic_sal = $basic_sal;
+            $this->calculate_gross();
+            $this->calculate_deductions();
+            $this->calculate_net_salary();
+        }
+
+        private function calculate_gross() {
+            $this->DA = $this->basic_sal * 0.8;
+            $this->HRA = $this->basic_sal * 0.1;
+            $this->TA = $this->basic_sal * 0.05;
+            $this->GROSS = $this->basic_sal + $this->DA + $this->HRA + $this->TA;
+        }
+
+        private function calculate_deductions() {
+            $this->IT = $this->GROSS * 0.1;
+            $this->PF = $this->basic_sal * 0.12;
+            $this->PT = 200;
+            $this->DEDUCTION = $this->IT + $this->PF + $this->PT;
+        }
+
+        private function calculate_net_salary() {
+            $this->NET = $this->GROSS - $this->DEDUCTION;
+        }
+
+        public function display_payslip() {
+            echo "<div class='payslip'>
+                    <h2>Pay Slip</h2>
+                    <p><strong>Employee Name:</strong> {$this->emp_name}</p>
+                    <p><strong>Department:</strong> {$this->dept_name}</p>
+                    <p><strong>Basic Salary:</strong> ₹{$this->basic_sal}</p>
+                    <p><strong>Gross Salary:</strong> ₹{$this->GROSS}</p>
+                    <p><strong>Total Deductions:</strong> ₹{$this->DEDUCTION}</p>
+                    <p><strong>Net Salary:</strong> ₹{$this->NET}</p>
+                  </div>";
+        }
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $emp_name = $_POST["emp_name"];
+        $dept_name = $_POST["dept_name"];
+        $basic_sal = $_POST["basic_sal"];
+
+        $employee = new Employee($emp_name, $dept_name, $basic_sal);
+        $employee->display_payslip();
+    }
+    ?>
+</div>
+</body>
+</html>
