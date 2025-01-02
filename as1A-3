@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="number"], select, button {
+            width: calc(100% - 24px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Calculator</h1>
+    <form method="post">
+        <label for="value1">Value 1:</label>
+        <input type="number" name="value1" id="value1" step="0.01" required>
+        <label for="value2">Value 2:</label>
+        <input type="number" name="value2" id="value2" step="0.01" required>
+        <label for="operation">Operation:</label>
+        <select name="operation" id="operation">
+            <option value="add">Add</option>
+            <option value="subtract">Subtract</option>
+            <option value="multiply">Multiply</option>
+            <option value="divide">Divide</option>
+        </select>
+        <button type="submit">Calculate</button>
+    </form>
+    <?php
+    class Calculator {
+        private $value1;
+        private $value2;
+        public function __construct($value1, $value2) {
+            $this->value1 = $value1;
+            $this->value2 = $value2;
+        }
+        public function add() {
+            return $this->value1 + $this->value2;
+        }
+        public function subtract() {
+            return $this->value1 - $this->value2;
+        }
+        public function multiply() {
+            return $this->value1 * $this->value2;
+        }
+        public function divide() {
+            return $this->value2 != 0 ? $this->value1 / $this->value2 : 'Division by zero error';
+        }
+    }
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $value1 = $_POST["value1"];
+        $value2 = $_POST["value2"];
+        $operation = $_POST["operation"];
+        $calc = new Calculator($value1, $value2);
+        $result = match ($operation) {
+            "add" => $calc->add(),
+            "subtract" => $calc->subtract(),
+            "multiply" => $calc->multiply(),
+            "divide" => $calc->divide(),
+            default => "Invalid operation"
+        };
+        echo "<div class='result'>Result: " . htmlspecialchars($result) . "</div>";
+    }
+    ?>
+</div>
+</body>
+</html>
