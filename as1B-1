@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distance Conversion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="number"], input[type="radio"] {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Distance Conversion</h1>
+    <form method="post" action="">
+        <label>Enter Value:</label>
+        <input type="number" name="value" step="0.01" required>
+        <label>Choose Conversion:</label>
+        <div>
+            <input type="radio" name="conversion" value="feet_to_inch" required> Feet to Inches
+        </div>
+        <div>
+            <input type="radio" name="conversion" value="inch_to_feet" required> Inches to Feet
+        </div>
+        <button type="submit">Convert</button>
+    </form>
+    <?php
+    class DISTANCE {
+        private $feet;
+        private $inches;
+
+        public function __construct($value) {
+            $this->feet = $value;
+            $this->inches = $value;
+        }
+
+        public function convert_feet_to_inch() {
+            return $this->feet * 12;
+        }
+
+        public function convert_inch_to_feet() {
+            return $this->inches / 12;
+        }
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $value = $_POST["value"];
+        $conversion = $_POST["conversion"];
+        $distance = new DISTANCE($value);
+
+        $result = $conversion === "feet_to_inch" 
+            ? $distance->convert_feet_to_inch() . " inches"
+            : $distance->convert_inch_to_feet() . " feet";
+
+        echo "<div class='result'>Converted Value: $result</div>";
+    }
+    ?>
+</div>
+</body>
+</html>
