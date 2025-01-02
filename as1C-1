@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        select, button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Article Management</h1>
+    <?php
+    class Article {
+        public $articleid;
+        public $name;
+        public $articleqty;
+        public $price;
+
+        public function __construct($articleid, $name, $articleqty, $price) {
+            $this->articleid = $articleid;
+            $this->name = $name;
+            $this->articleqty = $articleqty;
+            $this->price = $price;
+        }
+    }
+
+    $articles = [
+        new Article(1, "Notebook", 40, 300),
+        new Article(2, "Pen", 60, 50),
+        new Article(3, "Bag", 20, 700),
+        new Article(4, "Shoes", 55, 1200)
+    ];
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $option = $_POST["option"];
+        echo "<div class='result'><h3>Results:</h3>";
+        if ($option == "all") {
+            foreach ($articles as $article) {
+                echo "ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
+            }
+        } elseif ($option == "price") {
+            foreach ($articles as $article) {
+                if ($article->price > 500) {
+                    echo "ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
+                }
+            }
+        } elseif ($option == "quantity") {
+            foreach ($articles as $article) {
+                if ($article->articleqty > 50) {
+                    echo "ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
+                }
+            }
+        }
+        echo "</div>";
+    }
+    ?>
+    <form method="post">
+        <select name="option" required>
+            <option value="all">Display all articles</option>
+            <option value="price">Display articles with price > 500</option>
+            <option value="quantity">Display articles with quantity > 50</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>
