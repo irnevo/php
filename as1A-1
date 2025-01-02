@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, select, button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Employee Management System</h1>
+
+    <?php
+    session_start();  // Start a session to store the employee data across pages.
+
+    class Employee {
+        public $emp_code;
+        public $emp_name;
+        public $emp_designation;
+
+        public function __construct($emp_code, $emp_name, $emp_designation) {
+            $this->emp_code = $emp_code;
+            $this->emp_name = $emp_name;
+            $this->emp_designation = $emp_designation;
+        }
+    }
+
+    class EmpAccount extends Employee {
+        public $account_no;
+        public $joining_date;
+
+        public function __construct($emp_code, $emp_name, $emp_designation, $account_no, $joining_date) {
+            parent::__construct($emp_code, $emp_name, $emp_designation);
+            $this->account_no = $account_no;
+            $this->joining_date = $joining_date;
+        }
+    }
+
+    class EmpSal extends EmpAccount {
+        public $basic_pay;
+        public $earnings;
+        public $deductions;
+
+        public function __construct($emp_code, $emp_name, $emp_designation, $account_no, $joining_date, $basic_pay, $earnings, $deductions) {
+            parent::__construct($emp_code, $emp_name, $emp_designation, $account_no, $joining_date);
+            $this->basic_pay = $basic_pay;
+            $this->earnings = $earnings;
+            $this->deductions = $deductions;
+        }
+
+        public function display_salary() {
+            $net_salary = $this->basic_pay + $this->earnings - $this->deductions;
+            return "Employee: {$this->emp_name}, Designation: {$this->emp_designation}, Salary: {$net_salary}";
+        }
+    }
+
+    // Initialize employee data from session, if available
+    if (!isset($_SESSION['employees'])) {
+        $_SESSION['employees'] = [];
+    }
+
+    // Add an employee to the session
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $action = $_POST['action'];
+        switch ($action) {
+            case 'build_master':
+                $emp = new EmpSal(
+                    $_POST['emp_code'],
+                    $_POST['emp_name'],
+                    $_POST['emp_designation'],
+                    $_POST['account_no'],
+                    $_POST['joining_date'],
+                    $_POST['basic_pay'],
+                    $_POST['earnings'],
+                    $_POST['deductions']
+                );
+                $_SESSION['employees'][] = $emp;
+                echo "<div class='result'>Employee added successfully.</div>";
+                break;
+            case 'sort':
+                usort($_SESSION['employees'], function($a, $b) {
+                    return $a->emp_name <=> $b->emp_name;
+                });
+                echo "<div class='result'>Employees sorted by name:</div><ul>";
+                foreach ($_SESSION['employees'] as $emp) {
+                    echo "<li>{$emp->emp_name} - {$emp->emp_code}</li>";
+                }
+                echo "</ul>";
+                break;
+            case 'search':
+                $search_code = $_POST['search_code'];
+                $found = false;
+                foreach ($_SESSION['employees'] as $emp) {
+                    if ($emp->emp_code == $search_code) {
+                        echo "<div class='result'>Employee found: {$emp->emp_name}, {$emp->emp_designation}, Account: {$emp->account_no}</div>";
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    echo "<div class='result'>No employee found with the given code.</div>";
+                }
+                break;
+            case 'display_salary':
+                $emp_code = $_POST['emp_code_salary'];
+                $found = false;
+                foreach ($_SESSION['employees'] as $emp) {
+                    if ($emp->emp_code == $emp_code) {
+                        echo "<div class='result'>{$emp->display_salary()}</div>";
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    echo "<div class='result'>No employee found with the given code.</div>";
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    ?>
+
+    <form method="POST">
+        <h3>Build a Master Table</h3>
+        <label for="emp_code">Employee Code</label>
+        <input type="text" name="emp_code" required>
+        <label for="emp_name">Employee Name</label>
+        <input type="text" name="emp_name" required>
+        <label for="emp_designation">Employee Designation</label>
+        <input type="text" name="emp_designation" required>
+        <label for="account_no">Account Number</label>
+        <input type="text" name="account_no" required>
+        <label for="joining_date">Joining Date</label>
+        <input type="date" name="joining_date" required>
+        <label for="basic_pay">Basic Pay</label>
+        <input type="number" name="basic_pay" required>
+        <label for="earnings">Earnings</label>
+        <input type="number" name="earnings" required>
+        <label for="deductions">Deductions</label>
+        <input type="number" name="deductions" required>
+        <button type="submit" name="action" value="build_master">Build Master Table</button>
+    </form>
+
+    <form method="POST">
+        <h3>Sort All Entries</h3>
+        <button type="submit" name="action" value="sort">Sort Employees</button>
+    </form>
+
+    <form method="POST">
+        <h3>Search an Entry</h3>
+        <label for="search_code">Enter Employee Code</label>
+        <input type="text" name="search_code" required>
+        <button type="submit" name="action" value="search">Search</button>
+    </form>
+
+    <form method="POST">
+        <h3>Display Salary</h3>
+        <label for="emp_code_salary">Enter Employee Code</label>
+        <input type="text" name="emp_code_salary" required>
+        <button type="submit" name="action" value="display_salary">Display Salary</button>
+    </form>
+
+</div>
+</body>
+</html>
