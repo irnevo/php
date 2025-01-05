@@ -1,80 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Pay Slip</title>
+    <title>Temperature Converter</title>
 </head>
 <body>
-    <h2>Employee Pay Slip Generator</h2>
+    <h2>Temperature Conversion</h2>
     <form method="post" action="">
-        <label for="Emp_Name">Employee Name:</label>
-        <input type="text" id="Emp_Name" name="Emp_Name" required><br><br>
-        <label for="Dept_Name">Department Name:</label>
-        <input type="text" id="Dept_Name" name="Dept_Name" required><br><br>
-        <label for="Basic_sal">Basic Salary:</label>
-        <input type="number" id="Basic_sal" name="Basic_sal" required><br><br>
-        <input type="submit" value="Generate Pay Slip">
+        <label for="Celsius">Enter Temperature in Celsius:</label>
+        <input type="number" id="Celsius" name="Celsius" step="any"><br><br>
+        <label for="Fahrenheit">Enter Temperature in Fahrenheit:</label>
+        <input type="number" id="Fahrenheit" name="Fahrenheit" step="any"><br><br>
+        <input type="submit" value="Convert">
     </form>
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        class Employee {
-            private $Emp_Name;
-            private $Dept_Name;
-            private $Basic_sal;
-            private $DA;
-            private $HRA;
-            private $TA;
-            private $IT;
-            private $PF;
-            private $PT;
-            private $GROSS;
-            private $DEDUCTION;
-            private $NET;
+        class Temperature {
+            private $Celsius;
+            private $Fahrenheit;
 
-            public function __construct($Emp_Name, $Dept_Name, $Basic_sal) {
-                $this->Emp_Name = $Emp_Name;
-                $this->Dept_Name = $Dept_Name;
-                $this->Basic_sal = $Basic_sal;
-                $this->calculate_gross();
-                $this->calculate_deductions();
-                $this->calculate_net_salary();
+            public function __construct($Celsius = null, $Fahrenheit = null) {
+                $this->Celsius = $Celsius;
+                $this->Fahrenheit = $Fahrenheit;
             }
 
-            private function calculate_gross() {
-                $this->DA = $this->Basic_sal * 0.1;
-                $this->HRA = $this->Basic_sal * 0.2;
-                $this->TA = $this->Basic_sal * 0.05;
-                $this->GROSS = $this->Basic_sal + $this->DA + $this->HRA + $this->TA;
+            public function convertCelsiusToFahrenheit() {
+                return ($this->Celsius * 9/5) + 32;
             }
 
-            private function calculate_deductions() {
-                $this->IT = $this->Basic_sal * 0.08;
-                $this->PF = $this->Basic_sal * 0.12;
-                $this->PT = 200;
-                $this->DEDUCTION = $this->IT + $this->PF + $this->PT;
+            public function convertFahrenheitToCelsius() {
+                return ($this->Fahrenheit - 32) * 5/9;
             }
 
-            private function calculate_net_salary() {
-                $this->NET = $this->GROSS - $this->DEDUCTION;
-            }
-
-            public function display_pay_slip() {
-                echo "<h3>Pay Slip</h3>";
-                echo "Employee Name: " . $this->Emp_Name . "<br>";
-                echo "Department: " . $this->Dept_Name . "<br>";
-                echo "Basic Salary: " . $this->Basic_sal . "<br>";
-                echo "Gross Salary: " . $this->GROSS . "<br>";
-                echo "Deductions: " . $this->DEDUCTION . "<br>";
-                echo "Net Salary: " . $this->NET . "<br>";
+            public function displayConversion() {
+                if ($this->Celsius !== null) {
+                    echo "Celsius: " . $this->Celsius . "°C = " . $this->convertCelsiusToFahrenheit() . "°F<br>";
+                }
+                if ($this->Fahrenheit !== null) {
+                    echo "Fahrenheit: " . $this->Fahrenheit . "°F = " . $this->convertFahrenheitToCelsius() . "°C<br>";
+                }
             }
         }
 
-        $Emp_Name = $_POST["Emp_Name"];
-        $Dept_Name = $_POST["Dept_Name"];
-        $Basic_sal = $_POST["Basic_sal"];
+        $Celsius = isset($_POST['Celsius']) ? $_POST['Celsius'] : null;
+        $Fahrenheit = isset($_POST['Fahrenheit']) ? $_POST['Fahrenheit'] : null;
 
-        $employee = new Employee($Emp_Name, $Dept_Name, $Basic_sal);
-        $employee->display_pay_slip();
+        $temperature = new Temperature($Celsius, $Fahrenheit);
+        $temperature->displayConversion();
     }
     ?>
 </body>
