@@ -1,59 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article Management</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-            margin: 0;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            margin-top: 20px;
-        }
-        select, button {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-    </style>
 </head>
 <body>
-<div class="container">
-    <h1>Article Management</h1>
+    <h2>Article Management System</h2>
+
+    <form method="POST">
+        <label>Select an option:</label><br>
+        <input type="radio" name="option" value="1"> Display all articles<br>
+        <input type="radio" name="option" value="2"> Display articles with price > 500<br>
+        <input type="radio" name="option" value="3"> Display articles with quantity > 50<br><br>
+        <input type="submit" value="Submit">
+    </form>
+
     <?php
     class Article {
         public $articleid;
@@ -70,43 +30,37 @@
     }
 
     $articles = [
-        new Article(1, "Notebook", 40, 300),
-        new Article(2, "Pen", 60, 50),
-        new Article(3, "Bag", 20, 700),
-        new Article(4, "Shoes", 55, 1200)
+        new Article(1, "Article 1", 30, 600),
+        new Article(2, "Article 2", 70, 400),
+        new Article(3, "Article 3", 60, 700),
+        new Article(4, "Article 4", 10, 300),
+        new Article(5, "Article 5", 100, 900)
     ];
 
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $option = $_POST["option"];
-        echo "<div class='result'><h3>Results:</h3>";
-        if ($option == "all") {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $option = $_POST['option'];
+
+        if ($option == 1) {
+            echo "<h3>All Articles:</h3>";
             foreach ($articles as $article) {
-                echo "ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
+                echo "Article ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
             }
-        } elseif ($option == "price") {
+        } elseif ($option == 2) {
+            echo "<h3>Articles with Price > 500:</h3>";
             foreach ($articles as $article) {
                 if ($article->price > 500) {
-                    echo "ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
+                    echo "Article ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
                 }
             }
-        } elseif ($option == "quantity") {
+        } elseif ($option == 3) {
+            echo "<h3>Articles with Quantity > 50:</h3>";
             foreach ($articles as $article) {
                 if ($article->articleqty > 50) {
-                    echo "ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
+                    echo "Article ID: {$article->articleid}, Name: {$article->name}, Quantity: {$article->articleqty}, Price: {$article->price}<br>";
                 }
             }
         }
-        echo "</div>";
     }
     ?>
-    <form method="post">
-        <select name="option" required>
-            <option value="all">Display all articles</option>
-            <option value="price">Display articles with price > 500</option>
-            <option value="quantity">Display articles with quantity > 50</option>
-        </select>
-        <button type="submit">Submit</button>
-    </form>
-</div>
 </body>
 </html>
