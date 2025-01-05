@@ -1,64 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
-   
 </head>
 <body>
-<div class="container">
-    <h1>Calculator</h1>
     <form method="post">
-        <label for="value1">Value 1:</label>
-        <input type="number" name="value1" id="value1" step="0.01" required>
-        <label for="value2">Value 2:</label>
-        <input type="number" name="value2" id="value2" step="0.01" required>
-        <label for="operation">Operation:</label>
-        <select name="operation" id="operation">
-            <option value="add">Add</option>
-            <option value="subtract">Subtract</option>
-            <option value="multiply">Multiply</option>
-            <option value="divide">Divide</option>
-        </select>
-        <button type="submit">Calculate</button>
+        <label>Enter First Number:</label>
+        <input type="number" name="num1" required><br>
+        <label>Enter Second Number:</label>
+        <input type="number" name="num2" required><br>
+        <button type="submit" name="operation" value="add">Add</button>
+        <button type="submit" name="operation" value="subtract">Subtract</button>
+        <button type="submit" name="operation" value="multiply">Multiply</button>
+        <button type="submit" name="operation" value="divide">Divide</button>
     </form>
+
     <?php
     class Calculator {
         private $value1;
         private $value2;
+
         public function __construct($value1, $value2) {
             $this->value1 = $value1;
             $this->value2 = $value2;
         }
+
         public function add() {
             return $this->value1 + $this->value2;
         }
+
         public function subtract() {
             return $this->value1 - $this->value2;
         }
+
         public function multiply() {
             return $this->value1 * $this->value2;
         }
+
         public function divide() {
-            return $this->value2 != 0 ? $this->value1 / $this->value2 : 'Division by zero error';
+            if ($this->value2 == 0) {
+                return "Cannot divide by zero.";
+            }
+            return $this->value1 / $this->value2;
         }
     }
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $value1 = $_POST["value1"];
-        $value2 = $_POST["value2"];
-        $operation = $_POST["operation"];
-        $calc = new Calculator($value1, $value2);
-        $result = match ($operation) {
-            "add" => $calc->add(),
-            "subtract" => $calc->subtract(),
-            "multiply" => $calc->multiply(),
-            "divide" => $calc->divide(),
-            default => "Invalid operation"
-        };
-        echo "<div class='result'>Result: " . htmlspecialchars($result) . "</div>";
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $num1 = $_POST['num1'];
+        $num2 = $_POST['num2'];
+        $operation = $_POST['operation'];
+
+        $calc = new Calculator($num1, $num2);
+        echo "<h3>Result:</h3>";
+
+        if ($operation == "add") {
+            echo "Addition: " . $calc->add();
+        } elseif ($operation == "subtract") {
+            echo "Subtraction: " . $calc->subtract();
+        } elseif ($operation == "multiply") {
+            echo "Multiplication: " . $calc->multiply();
+        } elseif ($operation == "divide") {
+            echo "Division: " . $calc->divide();
+        }
     }
     ?>
-</div>
 </body>
 </html>
