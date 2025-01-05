@@ -1,106 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temperature Conversion</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-            margin: 0;
-        }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            margin-top: 20px;
-        }
-        input[type="number"], button {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        select {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-    </style>
+    <title>Temperature Converter</title>
 </head>
 <body>
-<div class="container">
-    <h1>Temperature Conversion</h1>
+    <h2>Temperature Conversion</h2>
+    <form method="post" action="">
+        <label for="Celsius">Enter Temperature in Celsius:</label>
+        <input type="number" id="Celsius" name="Celsius" step="any"><br><br>
+        <label for="Fahrenheit">Enter Temperature in Fahrenheit:</label>
+        <input type="number" id="Fahrenheit" name="Fahrenheit" step="any"><br><br>
+        <input type="submit" value="Convert">
+    </form>
+
     <?php
-    class Temperature {
-        private $celsius;
-        private $fahrenheit;
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        class Temperature {
+            private $Celsius;
+            private $Fahrenheit;
 
-        public function __construct($temperature, $conversion) {
-            if ($conversion == "c_to_f") {
-                $this->celsius = $temperature;
-                $this->fahrenheit = ($this->celsius * 9 / 5) + 32;
-            } elseif ($conversion == "f_to_c") {
-                $this->fahrenheit = $temperature;
-                $this->celsius = ($this->fahrenheit - 32) * 5 / 9;
+            public function __construct($Celsius = null, $Fahrenheit = null) {
+                $this->Celsius = $Celsius;
+                $this->Fahrenheit = $Fahrenheit;
+            }
+
+            public function convertCelsiusToFahrenheit() {
+                return ($this->Celsius * 9/5) + 32;
+            }
+
+            public function convertFahrenheitToCelsius() {
+                return ($this->Fahrenheit - 32) * 5/9;
+            }
+
+            public function displayConversion() {
+                if ($this->Celsius !== null) {
+                    echo "Celsius: " . $this->Celsius . "°C = " . $this->convertCelsiusToFahrenheit() . "°F<br>";
+                }
+                if ($this->Fahrenheit !== null) {
+                    echo "Fahrenheit: " . $this->Fahrenheit . "°F = " . $this->convertFahrenheitToCelsius() . "°C<br>";
+                }
             }
         }
 
-        public function displayConversion() {
-            if (isset($this->celsius)) {
-                echo "<div class='result'><strong>Celsius:</strong> {$this->celsius}°C<br><strong>Fahrenheit:</strong> {$this->fahrenheit}°F</div>";
-            }
-            if (isset($this->fahrenheit)) {
-                echo "<div class='result'><strong>Fahrenheit:</strong> {$this->fahrenheit}°F<br><strong>Celsius:</strong> {$this->celsius}°C</div>";
-            }
-        }
-    }
+        $Celsius = isset($_POST['Celsius']) ? $_POST['Celsius'] : null;
+        $Fahrenheit = isset($_POST['Fahrenheit']) ? $_POST['Fahrenheit'] : null;
 
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $temperature = $_POST["temperature"];
-        $conversion = $_POST["conversion"];
-        $tempObj = new Temperature($temperature, $conversion);
-        $tempObj->displayConversion();
+        $temperature = new Temperature($Celsius, $Fahrenheit);
+        $temperature->displayConversion();
     }
     ?>
-    <form method="post">
-        <input type="number" name="temperature" placeholder="Enter temperature" step="0.01" required>
-        <select name="conversion" required>
-            <option value="c_to_f">Celsius to Fahrenheit</option>
-            <option value="f_to_c">Fahrenheit to Celsius</option>
-        </select>
-        <button type="submit">Convert</button>
-    </form>
-</div>
 </body>
 </html>
