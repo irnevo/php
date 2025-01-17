@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Palindrome and Reverse</title>
+</head>
+<body>
+    <?php
+    $number = $palindromeResult = $reversedNumber = "";
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $number = $_POST["number"];
+
+        function isPalindrome($num) {
+            return strval($num) === strrev(strval($num));
+        }
+
+        function reverseNumber($num) {
+            if ($num < 10) return $num;
+            return intval($num % 10 . reverseNumber(intval($num / 10)));
+        }
+
+        $palindromeResult = isPalindrome($number) ? "Yes, it's a palindrome." : "No, it's not a palindrome.";
+        $reversedNumber = reverseNumber($number);
+    }
+    ?>
+    <form method="POST">
+        Enter a Number: <input type="number" name="number" value="<?php echo $number; ?>" required><br>
+        <input type="submit" value="Check">
+    </form>
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        echo "<h2>Results:</h2>";
+        echo "Palindrome: " . $palindromeResult . "<br>";
+        echo "Reversed Number: " . $reversedNumber . "<br>";
+    }
+    ?>
+</body>
+</html>
