@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Palindrome Checker</title>
+</head>
+<body>
+    <form method="POST">
+        Enter a Number: <input type="text" name="number" required><br>
+        <input type="submit" value="Check Palindrome">
+    </form>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $number = $_POST['number'];
+        $reversed = strrev($number);
+
+        if ($number == $reversed) {
+            echo $number . " is a Palindrome.";
+        } else {
+            echo $number . " is not a Palindrome.";
+        }
+    }
+    ?>
+</body>
+</html>
