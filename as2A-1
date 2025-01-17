@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Palindrome Checker</title>
+    <title>City Selection</title>
 </head>
 <body>
-    <form method="POST">
-        Enter a Number: <input type="text" name="number" required><br>
-        <input type="submit" value="Check Palindrome">
+    <form method="post" action="">
+        <label>Enter Your Name:</label>
+        <input type="text" name="name" value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>"><br><br>
+        <label>Select Cities You Would Like to Visit:</label><br>
+        <select name="cities[]" multiple>
+            <option value="Delhi" <?php echo isset($_POST['cities']) && in_array('Delhi', $_POST['cities']) ? 'selected' : ''; ?>>Delhi</option>
+            <option value="Mumbai" <?php echo isset($_POST['cities']) && in_array('Mumbai', $_POST['cities']) ? 'selected' : ''; ?>>Mumbai</option>
+            <option value="Kolkata" <?php echo isset($_POST['cities']) && in_array('Kolkata', $_POST['cities']) ? 'selected' : ''; ?>>Kolkata</option>
+            <option value="Chennai" <?php echo isset($_POST['cities']) && in_array('Chennai', $_POST['cities']) ? 'selected' : ''; ?>>Chennai</option>
+            <option value="Bangalore" <?php echo isset($_POST['cities']) && in_array('Bangalore', $_POST['cities']) ? 'selected' : ''; ?>>Bangalore</option>
+            <option value="Hyderabad" <?php echo isset($_POST['cities']) && in_array('Hyderabad', $_POST['cities']) ? 'selected' : ''; ?>>Hyderabad</option>
+        </select><br><br>
+        <input type="submit" value="Submit">
     </form>
 
     <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $number = $_POST['number'];
-        $reversed = strrev($number);
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $name = isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '';
+        $cities = isset($_POST['cities']) ? $_POST['cities'] : [];
 
-        if ($number == $reversed) {
-            echo $number . " is a Palindrome.";
+        echo "<h2>Selected Information:</h2>";
+        echo "Name: " . (!empty($name) ? $name : "No name entered.") . "<br>";
+        
+        if (!empty($cities)) {
+            echo "Selected Cities: " . implode(', ', $cities);
         } else {
-            echo $number . " is not a Palindrome.";
+            echo "No cities selected.";
         }
     }
     ?>
