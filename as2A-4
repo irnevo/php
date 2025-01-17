@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Subjects</title>
+</head>
+<body>
+    <?php
+    $subjects = ["Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography"];
+    $selectedSubjects = [];
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $selectedSubjects = $_POST["subjects"] ?? [];
+    }
+    ?>
+    <form method="POST">
+        <label>Select Subjects:</label><br>
+        <select name="subjects[]" multiple size="5">
+            <?php
+            foreach ($subjects as $subject) {
+                $isSelected = in_array($subject, $selectedSubjects) ? "selected" : "";
+                echo "<option value='$subject' $isSelected>$subject</option>";
+            }
+            ?>
+        </select><br>
+        <input type="submit" value="Submit">
+    </form>
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        echo "<h2>Selected Subjects:</h2>";
+        if (empty($selectedSubjects)) {
+            echo "No subjects selected.";
+        } else {
+            foreach ($selectedSubjects as $subject) {
+                echo $subject . "<br>";
+            }
+        }
+    }
+    ?>
+</body>
+</html>
