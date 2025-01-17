@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration</title>
+</head>
+<body>
+    <?php
+    $name = $email = $course = $gender = "";
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $name = $_POST["name"];
+        $email = $_POST["email"];
+        $course = $_POST["course"];
+        $gender = $_POST["gender"];
+    }
+    ?>
+    <form method="POST">
+        Name: <input type="text" name="name" value="<?php echo $name; ?>" required><br>
+        Email: <input type="email" name="email" value="<?php echo $email; ?>" required><br>
+        Course: <select name="course" required>
+            <option value="BSc" <?php if ($course == "BSc") echo "selected"; ?>>BSc</option>
+            <option value="BCom" <?php if ($course == "BCom") echo "selected"; ?>>BCom</option>
+            <option value="BA" <?php if ($course == "BA") echo "selected"; ?>>BA</option>
+        </select><br>
+        Gender: 
+        <input type="radio" name="gender" value="Male" <?php if ($gender == "Male") echo "checked"; ?>> Male
+        <input type="radio" name="gender" value="Female" <?php if ($gender == "Female") echo "checked"; ?>> Female<br>
+        <input type="submit" value="Register">
+    </form>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        echo "<h2>Student Information:</h2>";
+        echo "Name: " . $name . "<br>";
+        echo "Email: " . $email . "<br>";
+        echo "Course: " . $course . "<br>";
+        echo "Gender: " . $gender . "<br>";
+    }
+    ?>
+</body>
+</html>
