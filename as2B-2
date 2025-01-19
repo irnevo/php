@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>String Match Checker</title>
+</head>
+<body>
+    <h2>Check if Two Strings are Matching</h2>
+    <form method="post" action="">
+        Enter First String: <input type="text" name="string1" value="<?php echo isset($_POST['string1']) ? htmlspecialchars($_POST['string1']) : ''; ?>"><br><br>
+        Enter Second String: <input type="text" name="string2" value="<?php echo isset($_POST['string2']) ? htmlspecialchars($_POST['string2']) : ''; ?>"><br><br>
+        <input type="submit" name="check" value="Check Strings">
+    </form>
+    <?php
+    if (isset($_POST['check'])) {
+        $string1 = $_POST['string1'];
+        $string2 = $_POST['string2'];
+
+        if ($string1 === $string2) {
+            echo "<p style='color: green;'>The strings match!</p>";
+        } else {
+            echo "<p style='color: red;'>The strings do not match.</p>";
+        }
+    }
+    ?>
+</body>
+</html>
