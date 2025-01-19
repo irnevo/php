@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Currency Converter</title>
+</head>
+<body>
+    <h2>Indian Currency Converter</h2>
+    <form method="post" action="">
+        Enter Amount in INR: <input type="number" step="0.01" name="inr" value="<?php echo isset($_POST['inr']) ? htmlspecialchars($_POST['inr']) : ''; ?>"><br><br>
+        Convert to: 
+        <input type="radio" name="currency" value="USD" <?php echo (isset($_POST['currency']) && $_POST['currency'] === 'USD') ? 'checked' : ''; ?>> Dollar
+        <input type="radio" name="currency" value="GBP" <?php echo (isset($_POST['currency']) && $_POST['currency'] === 'GBP') ? 'checked' : ''; ?>> Pound<br><br>
+        <input type="submit" name="convert" value="Convert">
+    </form>
+
+    <?php
+    if (isset($_POST['convert'])) {
+        $inr = $_POST['inr'];
+        $currency = $_POST['currency'];
+
+        if (is_numeric($inr) && $inr > 0) {
+            $conversionRate = ($currency === 'USD') ? 0.012 : 0.0098; // Example conversion rates
+            $convertedAmount = $inr * $conversionRate;
+            $currencyName = ($currency === 'USD') ? 'Dollars' : 'Pounds';
+
+            echo "<p>₹{$inr} is approximately {$convertedAmount} {$currencyName}.</p>";
+        } else {
+            echo "<p style='color: red;'>Please enter a valid amount in INR.</p>";
+        }
+    }
+    ?>
+</body>
+</html>
