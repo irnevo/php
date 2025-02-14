@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Property Selection</title>
+</head>
+<body>
+    <h2>Select Property Details</h2>
+    <form method="post">
+        <label for="client_name">Enter Your Name:</label>
+        <input type="text" id="client_name" name="client_name" value="<?php echo isset($_POST['client_name']) ? htmlspecialchars($_POST['client_name']) : ''; ?>">
+        <br><br>
+        <label>Select Property Type:</label><br>
+        <select name="property[]" multiple>
+            <?php
+            $properties = ["Flat", "Bungalow", "Plot"];
+            $selectedProperties = isset($_POST['property']) ? $_POST['property'] : [];
+            foreach ($properties as $property) {
+                $isSelected = in_array($property, $selectedProperties) ? "selected" : "";
+                echo "<option value='$property' $isSelected>$property</option>";
+            }
+            ?>
+        </select>
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $clientName = isset($_POST['client_name']) ? htmlspecialchars($_POST['client_name']) : '';
+        echo "<h2>Selected Information:</h2>";
+        echo "Name: " . ($clientName ?: "Not provided") . "<br>";
+        
+        if (empty($selectedProperties)) {
+            echo "No property selected.";
+        } else {
+            echo "Properties: " . implode(", ", $selectedProperties);
+        }
+    }
+    ?>
+</body>
+</html>
