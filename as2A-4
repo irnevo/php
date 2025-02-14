@@ -8,7 +8,7 @@
     $subjects = ["Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography"];
     $selectedSubjects = [];
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $selectedSubjects = $_POST["subjects"] ?? [];
+        $selectedSubjects = isset($_POST["subjects"]) ? $_POST["subjects"] : [];
     }
     ?>
     <form method="POST">
@@ -17,7 +17,7 @@
             <?php
             foreach ($subjects as $subject) {
                 $isSelected = in_array($subject, $selectedSubjects) ? "selected" : "";
-                echo "<option value='$subject' $isSelected>$subject</option>";
+                echo "<option value=\"$subject\" $isSelected>$subject</option>";
             }
             ?>
         </select><br>
@@ -30,7 +30,7 @@
             echo "No subjects selected.";
         } else {
             foreach ($selectedSubjects as $subject) {
-                echo $subject . "<br>";
+                echo htmlspecialchars($subject) . "<br>";
             }
         }
     }
