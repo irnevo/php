@@ -1,0 +1,25 @@
+<?php
+$xml = new DOMDocument('1.0', 'UTF-8');
+$xml->formatOutput = true;
+
+$breakfastMenu = $xml->createElement('breakfast_menu');
+$xml->appendChild($breakfastMenu);
+
+$food = $xml->createElement('food');
+$breakfastMenu->appendChild($food);
+
+$name = $xml->createElement('name', 'French Fries');
+$food->appendChild($name);
+
+$price = $xml->createElement('price', 'Rs45');
+$food->appendChild($price);
+
+$description = $xml->createElement('description', 'Young youths are very much interested to eat it');
+$food->appendChild($description);
+
+$calories = $xml->createElement('calories', '650');
+$food->appendChild($calories);
+
+$xml->save('breakfast.xml');
+echo "XML file 'breakfast.xml' generated successfully!";
+?>
