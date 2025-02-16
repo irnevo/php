@@ -1,0 +1,42 @@
+<?php
+$xml = new DOMDocument('1.0', 'UTF-8');
+$xml->formatOutput = true;
+
+$store = $xml->createElement('MayanagariCDStore');
+$xml->appendChild($store);
+
+$categories = [
+    'Classical' => [
+        ['MovieName' => 'Casablanca', 'ReleaseYear' => '1942'],
+        ['MovieName' => 'Gone with the Wind', 'ReleaseYear' => '1939']
+    ],
+    'Action' => [
+        ['MovieName' => 'Mad Max: Fury Road', 'ReleaseYear' => '2015'],
+        ['MovieName' => 'Die Hard', 'ReleaseYear' => '1988']
+    ],
+    'Horror' => [
+        ['MovieName' => 'The Exorcist', 'ReleaseYear' => '1973'],
+        ['MovieName' => 'Get Out', 'ReleaseYear' => '2017']
+    ]
+];
+
+foreach ($categories as $categoryName => $movies) {
+    $category = $xml->createElement('Category');
+    $category->setAttribute('name', $categoryName);
+    $store->appendChild($category);
+
+    foreach ($movies as $movie) {
+        $movieElement = $xml->createElement('Movie');
+        $category->appendChild($movieElement);
+
+        $movieName = $xml->createElement('MovieName', $movie['MovieName']);
+        $movieElement->appendChild($movieName);
+
+        $releaseYear = $xml->createElement('ReleaseYear', $movie['ReleaseYear']);
+        $movieElement->appendChild($releaseYear);
+    }
+}
+
+$xml->save('movies.xml');
+echo "XML file 'movies.xml' generated successfully!";
+?>
