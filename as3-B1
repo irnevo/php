@@ -1,0 +1,23 @@
+<?php
+$xml = new DOMDocument('1.0', 'UTF-8');
+$xml->formatOutput = true;
+
+$cricketTeam = $xml->createElement('CricketTeam');
+$xml->appendChild($cricketTeam);
+
+$team = $xml->createElement('Team');
+$team->setAttribute('country', 'India');
+$cricketTeam->appendChild($team);
+
+$player = $xml->createElement('player', '');
+$team->appendChild($player);
+
+$runs = $xml->createElement('runs', '');
+$team->appendChild($runs);
+
+$wicket = $xml->createElement('wicket', '');
+$team->appendChild($wicket);
+
+$xml->save('cricket.xml');
+echo "XML file 'cricket.xml' generated successfully!";
+?>
