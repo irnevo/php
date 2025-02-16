@@ -1,0 +1,19 @@
+<?php
+
+$xml = simplexml_load_file('book.xml') or die("Error: Cannot create object");
+
+function displayXML($xml) {
+    foreach ($xml->children() as $element) {
+        echo $element->getName() . ": " . $element . "<br>";
+
+        foreach ($element->attributes() as $attributeName => $attributeValue) {
+            echo "Attribute: " . $attributeName . " = " . $attributeValue . "<br>";
+        }
+        // Recursive call for child elements
+        displayXML($element);
+    }
+}
+
+
+displayXML($xml);
+?>
