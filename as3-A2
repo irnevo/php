@@ -1,0 +1,31 @@
+<?php
+$xml = new DOMDocument('1.0', 'ISO-8859-1');
+$xml->formatOutput = true;
+
+$catalog = $xml->createElement('CATALOG');
+$xml->appendChild($catalog);
+
+$cd = $xml->createElement('CD');
+$catalog->appendChild($cd);
+
+$title = $xml->createElement('TITLE', 'Empire Burlesque');
+$cd->appendChild($title);
+
+$artist = $xml->createElement('ARTIST', 'Bob Dylan');
+$cd->appendChild($artist);
+
+$country = $xml->createElement('COUNTRY', 'USA');
+$cd->appendChild($country);
+
+$company = $xml->createElement('COMPANY', 'Columbia');
+$cd->appendChild($company);
+
+$price = $xml->createElement('PRICE', '10.90');
+$cd->appendChild($price);
+
+$year = $xml->createElement('YEAR', '1985');
+$cd->appendChild($year);
+
+$xml->save('CD.xml');
+echo "XML file 'CD.xml' generated successfully!";
+?>
