@@ -1,0 +1,37 @@
+<?php
+$xml = new DOMDocument('1.0', 'ISO-8859-1');
+$xml->formatOutput = true;
+
+$catalog = $xml->createElement('CATALOG');
+$xml->appendChild($catalog);
+
+$signature = $xml->createTextNode('Signature of the Instructor');
+$catalog->appendChild($signature);
+
+$space = $xml->createTextNode(' ');
+$catalog->appendChild($space);
+
+$number = $xml->createTextNode('20');
+$catalog->appendChild($number);
+
+$plant = $xml->createElement('PLANT');
+$catalog->appendChild($plant);
+
+$botanical = $xml->createElement('BOTANICAL', 'Sanguinaria canadensis');
+$plant->appendChild($botanical);
+
+$zone = $xml->createElement('ZONE', '4');
+$plant->appendChild($zone);
+
+$light = $xml->createElement('LIGHT', 'Mostly Shady');
+$plant->appendChild($light);
+
+$price = $xml->createElement('PRICE', '$2.44');
+$plant->appendChild($price);
+
+$availability = $xml->createElement('AVAILABILITY', '031599');
+$plant->appendChild($availability);
+
+$xml->save('plant.xml');
+echo "XML file 'plant.xml' generated successfully!";
+?>
