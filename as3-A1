@@ -1,0 +1,22 @@
+<?php
+header("Content-Type: text/xml");
+$xml = new SimpleXMLElement("<Course></Course>");
+
+$students = [
+    ["name" => "John Doe", "class" => "SYBBA CA", "percentage" => "85"],
+    ["name" => "Jane Smith", "class" => "SYBBA CA", "percentage" => "90"],
+    ["name" => "Michael Brown", "class" => "SYBBA CA", "percentage" => "78"],
+    ["name" => "Emily Johnson", "class" => "SYBBA CA", "percentage" => "92"],
+    ["name" => "Robert Davis", "class" => "SYBBA CA", "percentage" => "88"]
+];
+
+foreach ($students as $student) {
+    $studentNode = $xml->addChild("SYBBA_CA");
+    $studentNode->addChild("Studentname", $student["name"]);
+    $studentNode->addChild("Classname", $student["class"]);
+    $studentNode->addChild("percentage", $student["percentage"]);
+}
+
+$xml->asXML("Course.xml");
+echo $xml->asXML();
+?>
